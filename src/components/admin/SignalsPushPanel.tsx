@@ -264,11 +264,16 @@ export function SignalsPushPanel() {
                   <TableCell className="text-xs text-muted-foreground font-mono">
                     {new Date(s.created_at).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right space-x-1">
                     {s.is_active && (
-                      <Button variant="ghost" size="sm" onClick={() => deactivateSignal(s.id)} className="text-xs text-signal-sell">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      <>
+                        <Button variant="ghost" size="sm" onClick={() => sendAlert(s)} className="text-xs text-primary" title="Send SMS alert">
+                          <Send className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => deactivateSignal(s.id)} className="text-xs text-signal-sell" title="Deactivate">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </>
                     )}
                   </TableCell>
                 </TableRow>
