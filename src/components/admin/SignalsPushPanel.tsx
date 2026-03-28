@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Zap, Trash2 } from "lucide-react";
+import { Plus, Zap, Trash2, Send } from "lucide-react";
 
 const NSE_STOCKS = [
   { symbol: "SCOM", name: "Safaricom PLC" },
@@ -126,6 +126,31 @@ export function SignalsPushPanel() {
     fetchSignals();
   };
 
+  const sendAlert = async (signal: TradingSignal) => {
+    toast({ title: "Sending SMS alerts…" });
+    const { data, error } = await supabase.functions.invoke("send-signal-alerts", {
+      body: {
+        signal: {
+          symbol: signal.symbol,
+          name: signal.name,
+          signal: signal.signal,
+          confidence: signal.confidence,
+          price: signal.price,
+          target_price: signal.target_price,
+          stop_loss: signal.stop_loss,
+          notes: signal.notes,
+        },
+      },
+    });
+    if (error) {
+      toast({ title: "Alert sending failed", description: error.message, variant: "destructive" });
+    } else if (data?.sent > 0) {
+      toast({ title: `SMS alerts sent to ${data.sent} subscriber(s)` });
+    } else {
+      toast({ title: "No subscribers to alert", description: data?.message || "No active subscribers with phone numbers" });
+    }
+  };
+
   const signalColor = (s: string) =>
     s === "BUY" ? "text-signal-buy bg-signal-buy/10 border-signal-buy/30" :
     s === "SELL" ? "text-signal-sell bg-signal-sell/10 border-signal-sell/30" :
@@ -239,11 +264,16 @@ export function SignalsPushPanel() {
                   <TableCell className="text-xs text-muted-foreground font-mono">
                     {new Date(s.created_at).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right space-x-1">
                     {s.is_active && (
-                      <Button variant="ghost" size="sm" onClick={() => deactivateSignal(s.id)} className="text-xs text-signal-sell">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      <>
+                        <Button variant="ghost" size="sm" onClick={() => sendAlert(s)} className="text-xs text-primary" title="Send SMS alert">
+                          <Send className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => deactivateSignal(s.id)} className="text-xs text-signal-sell" title="Deactivate">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </>
                     )}
                   </TableCell>
                 </TableRow>
