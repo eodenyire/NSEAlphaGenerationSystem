@@ -126,6 +126,31 @@ export function SignalsPushPanel() {
     fetchSignals();
   };
 
+  const sendAlert = async (signal: TradingSignal) => {
+    toast({ title: "Sending SMS alerts…" });
+    const { data, error } = await supabase.functions.invoke("send-signal-alerts", {
+      body: {
+        signal: {
+          symbol: signal.symbol,
+          name: signal.name,
+          signal: signal.signal,
+          confidence: signal.confidence,
+          price: signal.price,
+          target_price: signal.target_price,
+          stop_loss: signal.stop_loss,
+          notes: signal.notes,
+        },
+      },
+    });
+    if (error) {
+      toast({ title: "Alert sending failed", description: error.message, variant: "destructive" });
+    } else if (data?.sent > 0) {
+      toast({ title: `SMS alerts sent to ${data.sent} subscriber(s)` });
+    } else {
+      toast({ title: "No subscribers to alert", description: data?.message || "No active subscribers with phone numbers" });
+    }
+  };
+
   const signalColor = (s: string) =>
     s === "BUY" ? "text-signal-buy bg-signal-buy/10 border-signal-buy/30" :
     s === "SELL" ? "text-signal-sell bg-signal-sell/10 border-signal-sell/30" :
