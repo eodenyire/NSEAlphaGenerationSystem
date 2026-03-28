@@ -6,7 +6,7 @@
 [![Tailwind](https://img.shields.io/badge/TailwindCSS-3.3-blue?logo=tailwindcss)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-1.0-green?logo=supabase)](https://supabase.com/)
 
-**Economic Signal Forge** is a web platform delivering real-time trading signals, macroeconomic events, and market sentiment insights. It is designed for investors, clients, and third-party stakeholders in Kenya and beyond, providing actionable financial intelligence on the Nairobi Securities Exchange (NSE).
+**NSE Alpha Generation System** is a web platform delivering real-time trading signals, macroeconomic events, and market sentiment insights. It is designed for investors, clients, and third-party stakeholders in Kenya and beyond, providing actionable financial intelligence on the Nairobi Securities Exchange (NSE).
 
 ---
 
